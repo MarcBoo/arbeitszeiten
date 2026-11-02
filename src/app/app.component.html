@@ -1,3 +1,4 @@
+
 <main class="shell">
   <header class="topbar">
     <a class="brand" href="./" aria-label="Arbeitszeit-Rechner Startseite">
@@ -27,25 +28,55 @@
       <div class="time-grid">
         <label class="field">
           <span class="field-label">Arbeitsbeginn</span>
+
           <span class="time-input-wrap">
             <input
               type="time"
               [(ngModel)]="startTime"
+              step="60"
               aria-label="Arbeitsbeginn"
             />
+
+            <button
+              type="button"
+              class="now-button"
+              (click)="setStartTimeNow()"
+              aria-label="Aktuelle Uhrzeit als Arbeitsbeginn setzen"
+            >
+              Jetzt
+            </button>
           </span>
         </label>
+
         <div class="time-arrow" aria-hidden="true">→</div>
+
         <label class="field">
           <span class="field-label">Arbeitsende</span>
+
           <span class="time-input-wrap">
-            <input type="time" [(ngModel)]="endTime" aria-label="Arbeitsende" />
+            <input
+              type="time"
+              [(ngModel)]="endTime"
+              step="60"
+              aria-label="Arbeitsende"
+            />
+
+            <button
+              type="button"
+              class="now-button"
+              (click)="setEndTimeNow()"
+              aria-label="Aktuelle Uhrzeit als Arbeitsende setzen"
+            >
+              Jetzt
+            </button>
           </span>
         </label>
       </div>
+
       @if (isOvernight) {
         <div class="overnight-note">
-          <span>↗</span> Nachtschicht erkannt – das Ende liegt am Folgetag.
+          <span>↗</span>
+          Nachtschicht erkannt – das Ende liegt am Folgetag.
         </div>
       }
 
@@ -56,36 +87,44 @@
           <div class="step-label">02 / PAUSEN</div>
           <h2>Pausenzeiten</h2>
         </div>
+
         <span class="optional-label">Bis zu 2 Pausen</span>
       </div>
 
       @for (pause of breaks; track $index; let i = $index) {
         <div class="break-row" [class.break-disabled]="!pause.enabled">
+
           <div class="break-name">
             <span class="break-number">{{ i + 1 }}</span>
             <span>Pause {{ i + 1 }}</span>
           </div>
+
           <label class="switch-label">
             <input
               type="checkbox"
               [(ngModel)]="pause.enabled"
               [attr.aria-label]="'Pause ' + (i + 1) + ' aktivieren'"
             />
+
             <span class="switch"></span>
-            <span class="switch-text">{{
-              pause.enabled ? "Aktiv" : "Keine"
-            }}</span>
+
+            <span class="switch-text">
+              {{ pause.enabled ? "Aktiv" : "Keine" }}
+            </span>
           </label>
+
           <div class="duration-controls">
             <input
               class="duration-input"
               type="number"
               min="0"
-              step="0.25"
+              step="1"
               [(ngModel)]="pause.amount"
               [disabled]="!pause.enabled"
               [attr.aria-label]="'Dauer Pause ' + (i + 1)"
+              (ngModelChange)="pause.amount = normalizeMinutes($event)"
             />
+
             <select
               [(ngModel)]="pause.unit"
               [disabled]="!pause.enabled"
@@ -99,22 +138,71 @@
       }
 
       <div class="hint">
-        <span>i</span> Bei Stunden sind auch Dezimalwerte möglich, z. B. 1,5
-        Stunden.
+        <span>i</span>
+        Pausen werden minutengenau berechnet. Dezimalwerte sind nicht möglich.
       </div>
 
       <button class="reset-button" type="button" (click)="reset()">
-        <span>↺</span> Eingaben zurücksetzen
+        <span>↺</span>
+        Eingaben zurücksetzen
       </button>
+
+      <div class="divider"></div>
+
+      <div class="break-header">
+        <div>
+          <div class="step-label">03 / EMPFEHLUNG</div>
+          <h2>Wann kannst du gehen?</h2>
+        </div>
+      </div>
+
+      <p class="recommendation-description">
+        Basierend auf 8 Stunden Netto-Arbeitszeit und deinem Arbeitsbeginn.
+      </p>
+
+      <div class="recommendation-list">
+        @for (recommendation of breakRecommendations; track recommendation.breakMinutes) {
+          <button
+            type="button"
+            class="recommendation-card"
+            (click)="applyRecommendation(recommendation.breakMinutes)"
+          >
+            <div class="recommendation-info">
+              <span class="recommendation-break">
+                {{ recommendation.breakMinutes }} Minuten Pause
+              </span>
+
+              <strong>
+                {{ recommendation.endTime }}
+                @if (recommendation.overnight) {
+                  <small> (+1 Tag)</small>
+                }
+              </strong>
+
+              <span class="recommendation-label">
+                Erwartetes Arbeitsende
+              </span>
+            </div>
+
+            <span class="recommendation-action">
+              Übernehmen →
+            </span>
+          </button>
+        }
+      </div>
+
     </div>
 
     <aside class="result-panel">
       <div class="result-top">
-        <div class="step-label light">03 / ERGEBNIS</div>
+        <div class="step-label light">04 / ERGEBNIS</div>
         <div class="result-symbol">✓</div>
       </div>
+
       <h2>Deine Arbeitszeit</h2>
-      <p class="result-subtitle">Die berechnete Zeit im Überblick.</p>
+      <p class="result-subtitle">
+        Die berechnete Zeit im Überblick.
+      </p>
 
       @if (isInvalid) {
         <div class="error-box">
@@ -127,26 +215,44 @@
       } @else {
         <div class="net-result">
           <span class="result-caption">NETTO-ARBEITSZEIT</span>
-          <div class="big-time">{{ formatDuration(netMinutes) }}</div>
+
+          <div class="big-time">
+            {{ formatDuration(netMinutes) }}
+          </div>
+
           <div class="decimal-chip">
-            {{ formatDecimal(netMinutes) }} <span>dezimal</span>
+            {{ formatDecimal(netMinutes) }}
+            <span>dezimal</span>
           </div>
         </div>
+
         <div class="result-breakdown">
           <div class="result-line">
-            <span><i class="legend-dot gross"></i> Brutto-Arbeitszeit</span>
+            <span>
+              <i class="legend-dot gross"></i>
+              Brutto-Arbeitszeit
+            </span>
             <strong>{{ formatDuration(grossMinutes) }}</strong>
           </div>
+
           <div class="result-line">
-            <span><i class="legend-dot pause"></i> Pausensumme</span>
+            <span>
+              <i class="legend-dot pause"></i>
+              Pausensumme
+            </span>
             <strong>{{ formatDuration(breakMinutes) }}</strong>
           </div>
+
           <div class="result-line total">
-            <span><i class="legend-dot net"></i> Netto-Arbeitszeit</span>
+            <span>
+              <i class="legend-dot net"></i>
+              Netto-Arbeitszeit
+            </span>
             <strong>{{ formatDuration(netMinutes) }}</strong>
           </div>
         </div>
       }
+
       <div class="result-footer">
         <span class="lock">⌑</span>
         Alle Berechnungen erfolgen direkt auf deinem Gerät.
