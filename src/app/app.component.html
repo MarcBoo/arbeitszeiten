@@ -1,0 +1,161 @@
+<main class="shell">
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Arbeitszeit-Rechner Startseite">
+      <span class="brand-mark">AZ</span>
+      <span>ZEIT<span class="brand-light">WERK</span></span>
+    </a>
+  </header>
+
+  <section class="intro">
+    <div class="eyebrow">ZEIT &amp; ARBEIT</div>
+    <h1>Arbeitszeit-<span>Rechner</span></h1>
+    <p>
+      Arbeitszeit einfach berechnen – Pausen abziehen, Ergebnis direkt sehen.
+    </p>
+  </section>
+
+  <section class="workspace">
+    <div class="panel input-panel">
+      <div class="section-heading">
+        <div>
+          <div class="step-label">01 / EINGABE</div>
+          <h2>Deine Arbeitszeit</h2>
+        </div>
+        <span class="clock-icon">◷</span>
+      </div>
+
+      <div class="time-grid">
+        <label class="field">
+          <span class="field-label">Arbeitsbeginn</span>
+          <span class="time-input-wrap">
+            <input
+              type="time"
+              [(ngModel)]="startTime"
+              aria-label="Arbeitsbeginn"
+            />
+          </span>
+        </label>
+        <div class="time-arrow" aria-hidden="true">→</div>
+        <label class="field">
+          <span class="field-label">Arbeitsende</span>
+          <span class="time-input-wrap">
+            <input type="time" [(ngModel)]="endTime" aria-label="Arbeitsende" />
+          </span>
+        </label>
+      </div>
+      @if (isOvernight) {
+        <div class="overnight-note">
+          <span>↗</span> Nachtschicht erkannt – das Ende liegt am Folgetag.
+        </div>
+      }
+
+      <div class="divider"></div>
+
+      <div class="break-header">
+        <div>
+          <div class="step-label">02 / PAUSEN</div>
+          <h2>Pausenzeiten</h2>
+        </div>
+        <span class="optional-label">Bis zu 2 Pausen</span>
+      </div>
+
+      @for (pause of breaks; track $index; let i = $index) {
+        <div class="break-row" [class.break-disabled]="!pause.enabled">
+          <div class="break-name">
+            <span class="break-number">{{ i + 1 }}</span>
+            <span>Pause {{ i + 1 }}</span>
+          </div>
+          <label class="switch-label">
+            <input
+              type="checkbox"
+              [(ngModel)]="pause.enabled"
+              [attr.aria-label]="'Pause ' + (i + 1) + ' aktivieren'"
+            />
+            <span class="switch"></span>
+            <span class="switch-text">{{
+              pause.enabled ? "Aktiv" : "Keine"
+            }}</span>
+          </label>
+          <div class="duration-controls">
+            <input
+              class="duration-input"
+              type="number"
+              min="0"
+              step="0.25"
+              [(ngModel)]="pause.amount"
+              [disabled]="!pause.enabled"
+              [attr.aria-label]="'Dauer Pause ' + (i + 1)"
+            />
+            <select
+              [(ngModel)]="pause.unit"
+              [disabled]="!pause.enabled"
+              [attr.aria-label]="'Einheit Pause ' + (i + 1)"
+            >
+              <option value="minutes">Minuten</option>
+              <option value="hours">Stunden</option>
+            </select>
+          </div>
+        </div>
+      }
+
+      <div class="hint">
+        <span>i</span> Bei Stunden sind auch Dezimalwerte möglich, z. B. 1,5
+        Stunden.
+      </div>
+
+      <button class="reset-button" type="button" (click)="reset()">
+        <span>↺</span> Eingaben zurücksetzen
+      </button>
+    </div>
+
+    <aside class="result-panel">
+      <div class="result-top">
+        <div class="step-label light">03 / ERGEBNIS</div>
+        <div class="result-symbol">✓</div>
+      </div>
+      <h2>Deine Arbeitszeit</h2>
+      <p class="result-subtitle">Die berechnete Zeit im Überblick.</p>
+
+      @if (isInvalid) {
+        <div class="error-box">
+          @if (grossMinutes <= 0) {
+            Bitte gib einen gültigen Arbeitszeitraum ein.
+          } @else {
+            Die Pausen sind länger als die gesamte Anwesenheitszeit.
+          }
+        </div>
+      } @else {
+        <div class="net-result">
+          <span class="result-caption">NETTO-ARBEITSZEIT</span>
+          <div class="big-time">{{ formatDuration(netMinutes) }}</div>
+          <div class="decimal-chip">
+            {{ formatDecimal(netMinutes) }} <span>dezimal</span>
+          </div>
+        </div>
+        <div class="result-breakdown">
+          <div class="result-line">
+            <span><i class="legend-dot gross"></i> Brutto-Arbeitszeit</span>
+            <strong>{{ formatDuration(grossMinutes) }}</strong>
+          </div>
+          <div class="result-line">
+            <span><i class="legend-dot pause"></i> Pausensumme</span>
+            <strong>{{ formatDuration(breakMinutes) }}</strong>
+          </div>
+          <div class="result-line total">
+            <span><i class="legend-dot net"></i> Netto-Arbeitszeit</span>
+            <strong>{{ formatDuration(netMinutes) }}</strong>
+          </div>
+        </div>
+      }
+      <div class="result-footer">
+        <span class="lock">⌑</span>
+        Alle Berechnungen erfolgen direkt auf deinem Gerät.
+      </div>
+    </aside>
+  </section>
+
+  <footer>
+    <span>ZEITWERK </span>
+    <span>Arbeitszeit minutengenau berechnen</span>
+  </footer>
+</main>
