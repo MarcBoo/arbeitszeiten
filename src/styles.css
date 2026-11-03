@@ -792,3 +792,76 @@ footer {
     font-size: 10px;
   }
 }
+
+
+.target-hours-control {
+  margin: 20px 0;
+}
+
+.target-hours-control input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+.target-hours-info {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.target-hours-info strong {
+  margin-left: 5px;
+}
+
+.work-warning {
+  padding: 16px;
+  margin: 15px 0;
+  border-radius: 10px;
+  line-height: 1.5;
+}
+
+.work-warning strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.work-warning p {
+  margin: 0;
+}
+
+.warning-nine {
+  background: #fff4d6;
+  border: 1px solid #edc66c;
+  color: #805600;
+}
+
+.warning-ten {
+  background: #ffe1e1;
+  border: 1px solid #e99a9a;
+  color: #9b2020;
+}
+
+.notification-button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #202c3b;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.notification-button:hover {
+  opacity: 0.85;
+}
+
+.notification-message {
+  margin-top: 10px;
+  font-size: 13px;
+}
+

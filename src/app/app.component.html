@@ -17,6 +17,8 @@
 
   <section class="workspace">
     <div class="panel input-panel">
+
+      <!-- WORKING HOURS -->
       <div class="section-heading">
         <div>
           <div class="step-label">01 / EINGABE</div>
@@ -82,9 +84,41 @@
 
       <div class="divider"></div>
 
+      <!-- TARGET WORKING HOURS -->
       <div class="break-header">
         <div>
-          <div class="step-label">02 / PAUSEN</div>
+          <div class="step-label">02 / SOLL-ARBEITSZEIT</div>
+          <h2>Gewünschte Arbeitszeit</h2>
+        </div>
+      </div>
+
+      <div class="target-hours-control">
+        <label class="field">
+          <span class="field-label">Netto-Arbeitszeit pro Tag (Stunden)</span>
+
+          <input
+            type="number"
+            [(ngModel)]="targetWorkHours"
+            (ngModelChange)="normalizeTargetHours($event)"
+            min="0.25"
+            max="24"
+            step="0.25"
+            aria-label="Gewünschte Netto-Arbeitszeit in Stunden"
+          />
+        </label>
+
+        <div class="target-hours-info">
+          Aktuelles Tagesziel:
+          <strong>{{ formatDuration(targetWorkMinutes) }}</strong>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- BREAKS -->
+      <div class="break-header">
+        <div>
+          <div class="step-label">03 / PAUSEN</div>
           <h2>Pausenzeiten</h2>
         </div>
 
@@ -147,21 +181,113 @@
         Eingaben zurücksetzen
       </button>
 
+      <!-- WARNINGS -->
       <div class="divider"></div>
 
       <div class="break-header">
         <div>
-          <div class="step-label">03 / EMPFEHLUNG</div>
+          <div class="step-label">04 / ARBEITSZEIT-KONTROLLE</div>
+          <h2>Arbeitszeit-Warnungen</h2>
+        </div>
+      </div>
+
+      @if (!isInvalid) {
+
+        @if (showNineHourWarning) {
+          <div class="work-warning warning-nine">
+            <strong>⚠ Achtung: 9-Stunden-Grenze nähert sich</strong>
+
+            <p>
+              Deine Anwesenheitszeit beträgt bereits
+              {{ formatDuration(grossMinutes) }}.
+
+              @if (breakMinutes <= 30) {
+                Du hast höchstens 30 Minuten Pause.
+                Die gesetzliche Pausenzeit von 45 Minuten bei mehr als
+                9 Stunden Arbeitszeit sollte berücksichtigt werden.
+              } @else {
+                Behalte deine Arbeitszeit und Pausen weiterhin im Blick.
+              }
+            </p>
+          </div>
+        }
+
+        @if (showTenHourWarning) {
+          <div class="work-warning warning-ten">
+            <strong>🚨 Achtung: 10-Stunden-Grenze nähert sich</strong>
+
+            <p>
+              Deine Anwesenheitszeit beträgt bereits
+              {{ formatDuration(grossMinutes) }}.
+
+              @if (breakMinutes < 45) {
+                Besonders wichtig: Deine Pausenzeit liegt unter 45 Minuten.
+                Prüfe deine Arbeitszeit und plane die erforderliche Pause ein.
+              } @else {
+                Du näherst dich der 10-Stunden-Grenze.
+                Beende deine Arbeit rechtzeitig.
+              }
+            </p>
+          </div>
+        }
+
+        @if (!showNineHourWarning && !showTenHourWarning) {
+          <p class="recommendation-description">
+            Aktuell liegt deine Anwesenheitszeit noch unter den
+            Warnschwellen von 8 Stunden und 30 Minuten.
+          </p>
+        }
+      }
+
+      <!-- NOTIFICATIONS -->
+      <div class="divider"></div>
+
+      <div class="break-header">
+        <div>
+          <div class="step-label">05 / BENACHRICHTIGUNGEN</div>
+          <h2>Erinnerung aktivieren</h2>
+        </div>
+      </div>
+
+      <p class="recommendation-description">
+        Du erhältst eine Browser-Benachrichtigung 30 Minuten vor deinem
+        eingetragenen Arbeitsende.
+      </p>
+
+      <button
+        type="button"
+        class="notification-button"
+        (click)="enableNotifications()"
+      >
+        {{ notificationStatus }}
+      </button>
+
+      @if (notificationMessage) {
+        <p class="notification-message">
+          {{ notificationMessage }}
+        </p>
+      }
+
+      <!-- RECOMMENDATIONS -->
+      <div class="divider"></div>
+
+      <div class="break-header">
+        <div>
+          <div class="step-label">06 / EMPFEHLUNG</div>
           <h2>Wann kannst du gehen?</h2>
         </div>
       </div>
 
       <p class="recommendation-description">
-        Basierend auf 8 Stunden Netto-Arbeitszeit und deinem Arbeitsbeginn.
+        Basierend auf {{ targetWorkHours }} Stunden Netto-Arbeitszeit
+        und deinem Arbeitsbeginn.
       </p>
 
       <div class="recommendation-list">
-        @for (recommendation of breakRecommendations; track recommendation.breakMinutes) {
+        @for (
+          recommendation of breakRecommendations;
+          track recommendation.breakMinutes
+        ) {
           <button
             type="button"
             class="recommendation-card"
@@ -193,13 +319,15 @@
 
     </div>
 
+    <!-- RESULTS -->
     <aside class="result-panel">
       <div class="result-top">
-        <div class="step-label light">04 / ERGEBNIS</div>
+        <div class="step-label light">07 / ERGEBNIS</div>
         <div class="result-symbol">✓</div>
       </div>
 
       <h2>Deine Arbeitszeit</h2>
+
       <p class="result-subtitle">
         Die berechnete Zeit im Überblick.
       </p>
@@ -261,7 +389,7 @@
   </section>
 
   <footer>
-    <span>ZEITWERK </span>
+    <span>ZEITWERK</span>
     <span>Arbeitszeit minutengenau berechnen</span>
   </footer>
 </main>
