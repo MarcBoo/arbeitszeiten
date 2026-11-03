@@ -1,0 +1,165 @@
+
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+jspm_packages/
+bower_components/
+
+# ==========================================
+# Angular
+# ==========================================
+.angular/
+.angular/cache/
+dist/
+out-tsc/
+coverage/
+.tmp/
+temp/
+
+# ==========================================
+# Environment & Local Configuration
+# ==========================================
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Angular environment files (local overrides)
+src/environments/environment.local.ts
+src/environments/environment.development.local.ts
+src/environments/environment.production.local.ts
+
+# Local configuration
+*.local
+*.local.*
+local.settings.json
+
+# ==========================================
+# Build & Compilation
+# ==========================================
+*.tsbuildinfo
+*.map
+*.js.map
+*.d.ts.map
+
+# ==========================================
+# Logs & Debugging
+# ==========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+debug.log*
+report.[0-9]*.json
+
+# ==========================================
+# Package Manager & Temporary Files
+# ==========================================
+.npm/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+.nyc_output/
+
+# ==========================================
+# IDEs & Editors
+# ==========================================
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+*.sublime-workspace
+*.sublime-project
+
+# ==========================================
+# Operating Systems
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Thumbs.db:encryptable
+Desktop.ini
+$RECYCLE.BIN/
+
+# ==========================================
+# Testing & Coverage
+# ==========================================
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# ==========================================
+# Local Databases & Runtime Files
+# ==========================================
+*.sqlite
+*.sqlite3
+*.db
+*.pid
+*.seed
+*.pid.lock
+
+# ==========================================
+# Temporary Files
+# ==========================================
+tmp/
+temp/
+.cache/
+.parcel-cache/
+.sass-cache/
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+*~
+
+# ==========================================
+# Environment Managers
+# ==========================================
+.nvmrc.local
+.node-version.local
+.python-version.local
+
+# ==========================================
+# Docker Local Overrides
+# ==========================================
+docker-compose.override.yml
+.env.docker.local
+
+# ==========================================
+# Certificates & Private Keys
+# ==========================================
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.jks
+*.keystore
+
+# ==========================================
+# Angular / Nx / Monorepo Tooling
+# ==========================================
+.nx/
+.turbo/
+.cache-loader/
+
+# ==========================================
+# Miscellaneous
+# ==========================================
+*.orig
+*.rej
+*.stackdump
+*.tgz
