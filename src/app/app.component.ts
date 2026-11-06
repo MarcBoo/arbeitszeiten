@@ -412,7 +412,7 @@ export class AppComponent implements OnInit, OnDestroy {
         body:
           `Noch ${Math.ceil(remainingMinutes)} Minuten bis zu deinem ` +
           `geplanten Arbeitsende um ${this.endTime} Uhr.`,
-        icon: undefined,
+        silent: false,
         tag: 'zeitwerk-work-end'
       });
 
