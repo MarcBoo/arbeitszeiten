@@ -14,7 +14,6 @@
       Arbeitszeit einfach berechnen – Pausen abziehen, Ergebnis direkt sehen.
     </p>
   </section>
-
   <section class="workspace">
     <div class="panel input-panel">
 
@@ -30,7 +29,6 @@
       <div class="time-grid">
         <label class="field">
           <span class="field-label">Arbeitsbeginn</span>
-
           <span class="time-input-wrap">
             <input
               type="time"
@@ -49,7 +47,6 @@
             </button>
           </span>
         </label>
-
         <div class="time-arrow" aria-hidden="true">→</div>
 
         <label class="field">
@@ -62,7 +59,6 @@
               step="60"
               aria-label="Arbeitsende"
             />
-
             <button
               type="button"
               class="now-button"
@@ -83,7 +79,6 @@
       }
 
       <div class="divider"></div>
-
       <!-- TARGET WORKING HOURS -->
       <div class="break-header">
         <div>
@@ -95,7 +90,6 @@
       <div class="target-hours-control">
         <label class="field">
           <span class="field-label">Netto-Arbeitszeit pro Tag (Stunden)</span>
-
           <input
             type="number"
             [(ngModel)]="targetWorkHours"
@@ -114,7 +108,6 @@
       </div>
 
       <div class="divider"></div>
-
       <!-- BREAKS -->
       <div class="break-header">
         <div>
@@ -127,7 +120,6 @@
 
       @for (pause of breaks; track $index; let i = $index) {
         <div class="break-row" [class.break-disabled]="!pause.enabled">
-
           <div class="break-name">
             <span class="break-number">{{ i + 1 }}</span>
             <span>Pause {{ i + 1 }}</span>
@@ -137,16 +129,14 @@
             <input
               type="checkbox"
               [(ngModel)]="pause.enabled"
-              [attr.aria-label]="'Pause ' + (i + 1) + ' aktivieren'"
+              [attr.aria-label]="'Pause ' + (i + 1) + ' aktivieren"
             />
 
             <span class="switch"></span>
-
             <span class="switch-text">
               {{ pause.enabled ? "Aktiv" : "Keine" }}
             </span>
           </label>
-
           <div class="duration-controls">
             <input
               class="duration-input"
@@ -158,7 +148,6 @@
               [attr.aria-label]="'Dauer Pause ' + (i + 1)"
               (ngModelChange)="pause.amount = normalizeMinutes($event)"
             />
-
             <select
               [(ngModel)]="pause.unit"
               [disabled]="!pause.enabled"
@@ -175,7 +164,6 @@
         <span>i</span>
         Pausen werden minutengenau berechnet. Dezimalwerte sind nicht möglich.
       </div>
-
       <button class="reset-button" type="button" (click)="reset()">
         <span>↺</span>
         Eingaben zurücksetzen
@@ -192,15 +180,13 @@
       </div>
 
       @if (!isInvalid) {
-
         @if (showNineHourWarning) {
           <div class="work-warning warning-nine">
             <strong>⚠ Achtung: 9-Stunden-Grenze nähert sich</strong>
 
             <p>
-              Deine Anwesenheitszeit beträgt bereits
-              {{ formatDuration(grossMinutes) }}.
-
+              Deine Netto-Arbeitszeit beträgt bereits
+              {{ formatDuration(netMinutes) }}.
               @if (breakMinutes <= 30) {
                 Du hast höchstens 30 Minuten Pause.
                 Die gesetzliche Pausenzeit von 45 Minuten bei mehr als
@@ -211,15 +197,13 @@
             </p>
           </div>
         }
-
         @if (showTenHourWarning) {
           <div class="work-warning warning-ten">
             <strong>🚨 Achtung: 10-Stunden-Grenze nähert sich</strong>
 
             <p>
-              Deine Anwesenheitszeit beträgt bereits
-              {{ formatDuration(grossMinutes) }}.
-
+              Deine Netto-Arbeitszeit beträgt bereits
+              {{ formatDuration(netMinutes) }}.
               @if (breakMinutes < 45) {
                 Besonders wichtig: Deine Pausenzeit liegt unter 45 Minuten.
                 Prüfe deine Arbeitszeit und plane die erforderliche Pause ein.
@@ -230,10 +214,9 @@
             </p>
           </div>
         }
-
         @if (!showNineHourWarning && !showTenHourWarning) {
           <p class="recommendation-description">
-            Aktuell liegt deine Anwesenheitszeit noch unter den
+            Aktuell liegt deine Netto-Arbeitszeit noch unter den
             Warnschwellen von 8 Stunden und 30 Minuten.
           </p>
         }
@@ -248,7 +231,6 @@
           <h2>Erinnerung aktivieren</h2>
         </div>
       </div>
-
       <p class="recommendation-description">
         Du erhältst eine Browser-Benachrichtigung 30 Minuten vor deinem
         eingetragenen Arbeitsende.
@@ -267,7 +249,6 @@
           {{ notificationMessage }}
         </p>
       }
-
       <!-- RECOMMENDATIONS -->
       <div class="divider"></div>
 
@@ -282,7 +263,6 @@
         Basierend auf {{ targetWorkHours }} Stunden Netto-Arbeitszeit
         und deinem Arbeitsbeginn.
       </p>
-
       <div class="recommendation-list">
         @for (
           recommendation of breakRecommendations;
@@ -297,7 +277,6 @@
               <span class="recommendation-break">
                 {{ recommendation.breakMinutes }} Minuten Pause
               </span>
-
               <strong>
                 {{ recommendation.endTime }}
                 @if (recommendation.overnight) {
@@ -318,7 +297,6 @@
       </div>
 
     </div>
-
     <!-- RESULTS -->
     <aside class="result-panel">
       <div class="result-top">
@@ -331,7 +309,6 @@
       <p class="result-subtitle">
         Die berechnete Zeit im Überblick.
       </p>
-
       @if (isInvalid) {
         <div class="error-box">
           @if (grossMinutes <= 0) {
@@ -347,7 +324,6 @@
           <div class="big-time">
             {{ formatDuration(netMinutes) }}
           </div>
-
           <div class="decimal-chip">
             {{ formatDecimal(netMinutes) }}
             <span>dezimal</span>
@@ -362,7 +338,6 @@
             </span>
             <strong>{{ formatDuration(grossMinutes) }}</strong>
           </div>
-
           <div class="result-line">
             <span>
               <i class="legend-dot pause"></i>
@@ -380,7 +355,6 @@
           </div>
         </div>
       }
-
       <div class="result-footer">
         <span class="lock">⌑</span>
         Alle Berechnungen erfolgen direkt auf deinem Gerät.
