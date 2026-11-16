@@ -25,7 +25,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   startTime = '08:00';
   endTime = '17:00';
-
   // Default net working time: 8.25 hours
   targetWorkHours = 8.25;
 
@@ -77,7 +76,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   get breakMinutes(): number {
     return this.breaks.reduce((total, item) => {
-
       if (
         !item.enabled ||
         !Number.isFinite(Number(item.amount))
@@ -157,20 +155,22 @@ export class AppComponent implements OnInit, OnDestroy {
   // -----------------------------------------
 
   // Warning begins 30 minutes before 9 hours.
+  // Uses NET working time, excluding breaks.
   // Only shown when total breaks are 30 minutes or less.
   get showNineHourWarning(): boolean {
     return (
-      this.grossMinutes >= 8 * 60 + 30 &&
-      this.grossMinutes < 10 * 60 &&
+      this.netMinutes >= 8 * 60 + 30 &&
+      this.netMinutes < 10 * 60 &&
       this.breakMinutes <= 30
     );
   }
 
   // Warning begins 30 minutes before 10 hours.
+  // Uses NET working time, excluding breaks.
   get showTenHourWarning(): boolean {
     return (
-      this.grossMinutes >= 9 * 60 + 30 &&
-      this.grossMinutes < 10 * 60
+      this.netMinutes >= 9 * 60 + 30 &&
+      this.netMinutes < 10 * 60
     );
   }
 
@@ -186,7 +186,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     return [30, 45].map(breakDuration => {
-
       const totalMinutes =
         this.targetWorkMinutes + breakDuration;
 
@@ -292,7 +291,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     const [hours, minutes] = value.split(':').map(Number);
-
     return hours * 60 + minutes;
   }
 
@@ -311,7 +309,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     if (Notification.permission === 'granted') {
       this.notificationStatus = '✓ Benachrichtigungen aktiviert';
-
       this.notificationMessage =
         'Du wirst 30 Minuten vor deinem Arbeitsende erinnert.';
 
